@@ -24,6 +24,14 @@ export const getTeamsByUserId = async (userId: string) => {
                 },
             },
         },
+        include: {
+            _count: {
+                select: {
+                    projects: true,
+                    members: true,
+                },
+            },
+        },
     });
     return teams;
 };
@@ -35,6 +43,23 @@ export const getTeamById = async (teamId: string, userId: string) => {
             members: {
                 some: {
                     userId,
+                },
+            },
+        },
+        include: {
+            projects: {
+                include: {
+                    _count: {
+                        select: {
+                            tasks: true,
+                        },
+                    },
+                },
+            },
+            _count: {
+                select: {
+                    projects: true,
+                    members: true,
                 },
             },
         },

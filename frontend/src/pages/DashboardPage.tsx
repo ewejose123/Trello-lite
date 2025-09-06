@@ -12,7 +12,7 @@ import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const DashboardPage: React.FC = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [teams, setTeams] = useState<Team[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [stats, setStats] = useState<{ totalProjects: number; totalTasks: number }>({ totalProjects: 0, totalTasks: 0 });
@@ -114,8 +114,7 @@ const DashboardPage: React.FC = () => {
                             <Button
                                 variant="outline"
                                 onClick={() => {
-                                    localStorage.removeItem('user');
-                                    localStorage.removeItem('token');
+                                    logout();
                                     window.location.href = '/';
                                 }}
                                 className="border-gray-600 text-gray-300 hover:bg-gray-800"

@@ -28,9 +28,11 @@ import Card from '../components/Card';
 import * as authService from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [loginData, setLoginData] = useState({ email: '', password: '' });
@@ -42,18 +44,18 @@ const LandingPage: React.FC = () => {
         setLoading(true);
         try {
             const { user, accessToken } = await authService.login(loginData);
-            localStorage.setItem('user', JSON.stringify(user));
-            localStorage.setItem('token', accessToken);
+            login(user, accessToken); // Use AuthContext login method
             toast.success('Welcome back!');
             navigate('/dashboard');
-        } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Login failed';
-            const detailedErrors = err.response?.data?.errors || [];
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { message?: string; errors?: Array<{ field: string; message: string }> } } };
+            const errorMessage = error.response?.data?.message || 'Login failed';
+            const detailedErrors = error.response?.data?.errors || [];
 
             if (detailedErrors.length > 0) {
                 // Show specific validation errors
-                detailedErrors.forEach((error: any) => {
-                    toast.error(`${error.field}: ${error.message}`);
+                detailedErrors.forEach((validationError: { field: string; message: string }) => {
+                    toast.error(`${validationError.field}: ${validationError.message}`);
                 });
             } else {
                 toast.error(errorMessage);
@@ -77,14 +79,15 @@ const LandingPage: React.FC = () => {
             toast.success('Account created successfully! Please sign in.');
             setShowRegister(false);
             setShowLogin(true);
-        } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Registration failed';
-            const detailedErrors = err.response?.data?.errors || [];
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { message?: string; errors?: Array<{ field: string; message: string }> } } };
+            const errorMessage = error.response?.data?.message || 'Registration failed';
+            const detailedErrors = error.response?.data?.errors || [];
 
             if (detailedErrors.length > 0) {
                 // Show specific validation errors
-                detailedErrors.forEach((error: any) => {
-                    toast.error(`${error.field}: ${error.message}`);
+                detailedErrors.forEach((validationError: { field: string; message: string }) => {
+                    toast.error(`${validationError.field}: ${validationError.message}`);
                 });
             } else {
                 toast.error(errorMessage);

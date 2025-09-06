@@ -40,10 +40,13 @@ export interface Team {
     id: string;
     name: string;
     createdAt: string;
+    updatedAt?: string;
     _count?: {
         projects: number;
-        tasks: number;
+        tasks?: number;
+        members?: number;
     };
+    projects?: Project[];
 }
 
 export interface Attachment {

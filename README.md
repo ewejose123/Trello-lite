@@ -164,7 +164,6 @@ taskmanager-pro/
 DATABASE_URL="postgresql://user:password@localhost:5432/taskmanager"
 JWT_SECRET="your-super-secret-jwt-key"
 JWT_REFRESH_SECRET="your-super-secret-refresh-key"
-PORT=8000
 NODE_ENV=development
 ```
 
@@ -227,13 +226,7 @@ VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 
 ## 🤝 Contributing
 
-This is a demo project, but contributions are welcome! 
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+This is a demo project. No need to contribute.
 
 ## 📝 License
 
@@ -244,16 +237,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Prisma** for the excellent ORM
 - **Tailwind CSS** for the beautiful design system
 - **Framer Motion** for smooth animations
-- **Lucide** for the beautiful icons
-- **React Hot Toast** for user feedback
-
-## 📞 Support
-
-For questions or support:
-- Create an issue on GitHub
-- Check the documentation
-- Review the code examples
-
----
 
 **Built with ❤️ using modern web technologies**

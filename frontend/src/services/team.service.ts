@@ -11,7 +11,12 @@ export const getTeams = async (): Promise<Team[]> => {
         const response = await api.get('/teams');
         const teams = response.data;
         
-        // Fetch project counts for each team
+        // If teams already have _count from backend, use them directly
+        if (teams.length > 0 && teams[0]._count) {
+            return teams;
+        }
+        
+        // Fallback: Fetch project counts for each team if not included
         const teamsWithCounts = await Promise.all(
             teams.map(async (team: Team) => {
                 try {
@@ -50,9 +55,11 @@ export const getTeams = async (): Promise<Team[]> => {
         );
         
         return teamsWithCounts;
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Error fetching teams:', error);
-        return [];
+        const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+        const errorMessage = axiosError.response?.data?.message || axiosError.message || 'Failed to fetch team data. Please try again.';
+        throw new Error(errorMessage);
     }
 };
 

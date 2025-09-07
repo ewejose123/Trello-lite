@@ -1,12 +1,14 @@
-import api from './api';
+import api, { markUserAction } from './api';
 import type { Team } from '../types';
 
 export const createTeam = async (name: string): Promise<Team> => {
+    markUserAction();
     const response = await api.post('/teams', { name });
     return response.data;
 };
 
 export const getTeams = async (): Promise<Team[]> => {
+    markUserAction();
     try {
         const response = await api.get('/teams');
         const teams = response.data;
@@ -64,11 +66,13 @@ export const getTeams = async (): Promise<Team[]> => {
 };
 
 export const getTeamById = async (teamId: string): Promise<Team> => {
+    markUserAction();
     const response = await api.get(`/teams/${teamId}`);
     return response.data;
 };
 
 export const getTeamStats = async (): Promise<{ totalProjects: number; totalTasks: number }> => {
+    markUserAction();
     try {
         // Get all teams and their projects/tasks
         const teams = await getTeams();

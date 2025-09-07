@@ -14,27 +14,27 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ className }) => {
     const checkServerStatus = async () => {
         setIsChecking(true);
         try {
-            // First, test if the server root is accessible
+            // Test CORS with the backend
             const baseUrl = api.defaults.baseURL?.replace('/api', '') || 'https://taskmanagerpro-i68r.onrender.com';
-            const rootResponse = await fetch(baseUrl, { 
+            const response = await fetch(`${baseUrl}/cors-test`, {
                 method: 'GET',
+                credentials: 'include', // Important for CORS with credentials
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 signal: AbortSignal.timeout(10000)
             });
-            
-            if (rootResponse.ok) {
-                // Server root is working, now test API endpoint
-                try {
-                    await api.get('/', { timeout: 5000 });
-                    setIsOnline(true);
-                } catch {
-                    // API routes might not be working, but server is up
-                    console.warn('Server is up but API routes may not be deployed properly');
-                    setIsOnline(false);
-                }
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('CORS test successful:', data);
+                setIsOnline(true);
             } else {
+                console.error('CORS test failed:', response.status, response.statusText);
                 setIsOnline(false);
             }
-        } catch {
+        } catch (error) {
+            console.error('CORS test error:', error);
             setIsOnline(false);
         } finally {
             setIsChecking(false);

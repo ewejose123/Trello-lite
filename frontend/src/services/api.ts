@@ -14,11 +14,18 @@ const api = axios.create({
         'Content-Type': 'application/json',
     },
     timeout: 45000, // 45 seconds to handle cold starts
+    withCredentials: true, // Enable credentials for CORS
 });
 
-// Track cold start state
+// Track cold start state - only show when user attempts an action
 let isColdStarting = false;
 let coldStartToastId: string | undefined;
+let hasUserTriggeredAction = false;
+
+// Function to mark that user has triggered an action requiring backend
+export const markUserAction = () => {
+  hasUserTriggeredAction = true;
+};
 
 api.interceptors.request.use(
     (config) => {
@@ -27,13 +34,13 @@ api.interceptors.request.use(
             config.headers['Authorization'] = `Bearer ${token}`;
         }
         
-        // Show cold start message for the first request that takes too long
-        if (!isColdStarting && import.meta.env.PROD) {
+        // Only show cold start message if user has triggered an action and we're in production
+        if (!isColdStarting && hasUserTriggeredAction && import.meta.env.PROD) {
             const coldStartTimer = setTimeout(() => {
                 if (!isColdStarting) {
                     isColdStarting = true;
                     coldStartToastId = toast.loading(
-                        '🚀 Server is starting up (cold start)... This may take up to 30 seconds.',
+                        '🚀 Server is starting up (cold start)... Please wait, this may take up to 30 seconds.',
                         {
                             duration: 30000,
                             style: {
@@ -96,11 +103,12 @@ api.interceptors.response.use(
         
         // Handle specific errors
         if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-            toast.error('⚠️ Server is taking longer than expected. Please try again.', {
-                duration: 5000,
+            toast.error('🚀 Server is starting up (cold start). Please wait and try again in a moment.', {
+                duration: 8000,
                 style: {
-                    background: '#dc2626',
-                    color: '#ffffff',
+                    background: '#1f2937',
+                    color: '#f3f4f6',
+                    border: '1px solid #374151',
                 },
             });
         } else if (error.response?.status === 401) {
@@ -109,12 +117,13 @@ api.interceptors.response.use(
             localStorage.removeItem('user');
             window.location.href = '/';
         } else if (!error.response) {
-            // Network error - server might be down
-            toast.error('🚫 Unable to connect to server. Please check your connection.', {
-                duration: 5000,
+            // Network error - server might be cold starting
+            toast.error('🚀 Server is starting up. This may take up to 30 seconds. Please try again shortly.', {
+                duration: 8000,
                 style: {
-                    background: '#dc2626',
-                    color: '#ffffff',
+                    background: '#1f2937',
+                    color: '#f3f4f6',
+                    border: '1px solid #374151',
                 },
             });
         }

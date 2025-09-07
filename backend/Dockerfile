@@ -28,6 +28,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
 
+# Install prisma for migrations
+RUN npm install prisma
+
 # Copy the built code from the builder stage
 COPY --from=builder /app/dist ./dist
 
@@ -35,6 +38,7 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-EXPOSE 3000
+EXPOSE 10000
 
-CMD ["node", "dist/index.js"]
+# Run migrations and start the app
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]

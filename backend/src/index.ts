@@ -14,7 +14,13 @@ const port = process.env.PORT || 8000;
 
 // Enable CORS for frontend
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:3002'], // Support both frontend ports
+    origin: [
+        'http://localhost:3000', 
+        'http://localhost:5173', 
+        'http://localhost:3002',
+        'https://taskmanagerpro-jade.vercel.app', // Production frontend
+        process.env.FRONTEND_URL || 'http://localhost:5173' // Fallback
+    ],
     credentials: true, // Allow cookies
 }));
 
@@ -32,6 +38,21 @@ app.use('/api/attachments', attachmentRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Express + TypeScript Server');
+});
+
+// Health check endpoint for API
+app.get('/api', (req: Request, res: Response) => {
+    res.json({ status: 'ok', message: 'API is running' });
+});
+
+// Health check with more details
+app.get('/api/health', (req: Request, res: Response) => {
+    res.json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development'
+    });
 });
 
 app.listen(port, () => {

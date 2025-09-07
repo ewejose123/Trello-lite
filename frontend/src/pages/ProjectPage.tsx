@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Plus, Users, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import FileUpload from '../components/FileUpload';
@@ -7,6 +7,7 @@ import type { Attachment } from '../types';
 import * as taskService from '../services/task.service';
 import * as projectService from '../services/project.service';
 import type { Task } from '../services/task.service';
+import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Input from '../components/Input';
@@ -20,6 +21,8 @@ interface Project {
 
 const ProjectPage: React.FC = () => {
     const { projectId } = useParams<{ projectId: string }>();
+    const navigate = useNavigate();
+    const { logout } = useAuth();
     const [project, setProject] = useState<Project | null>(null);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -154,7 +157,7 @@ const ProjectPage: React.FC = () => {
                         <div className="flex space-x-4">
                             <Button
                                 variant="ghost"
-                                onClick={() => window.location.href = '/dashboard'}
+                                onClick={() => navigate('/dashboard')}
                                 className="text-gray-300 hover:text-white"
                             >
                                 ← Back to Dashboard
@@ -162,9 +165,8 @@ const ProjectPage: React.FC = () => {
                             <Button
                                 variant="outline"
                                 onClick={() => {
-                                    localStorage.removeItem('user');
-                                    localStorage.removeItem('token');
-                                    window.location.href = '/';
+                                    logout();
+                                    navigate('/');
                                 }}
                                 className="border-gray-600 text-gray-300 hover:bg-gray-800"
                             >

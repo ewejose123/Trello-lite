@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Users, Calendar, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -13,6 +13,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 const DashboardPage: React.FC = () => {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
     const [teams, setTeams] = useState<Team[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [stats, setStats] = useState<{ totalProjects: number; totalTasks: number }>({ totalProjects: 0, totalTasks: 0 });
@@ -106,7 +107,7 @@ const DashboardPage: React.FC = () => {
                         <div className="flex space-x-4">
                             <Button
                                 variant="ghost"
-                                onClick={() => window.location.href = '/'}
+                                onClick={() => navigate('/')}
                                 className="text-gray-300 hover:text-white"
                             >
                                 ← Back to Landing
@@ -115,7 +116,7 @@ const DashboardPage: React.FC = () => {
                                 variant="outline"
                                 onClick={() => {
                                     logout();
-                                    window.location.href = '/';
+                                    navigate('/');
                                 }}
                                 className="border-gray-600 text-gray-300 hover:bg-gray-800"
                             >

@@ -37,6 +37,10 @@ const router = createBrowserRouter([
             },
         ]
     },
+    {
+        path: '*',
+        element: <LandingPage />,
+    },
 ]);
 
 const AppRouter = () => {

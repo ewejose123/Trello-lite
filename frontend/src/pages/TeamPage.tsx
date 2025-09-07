@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Plus, Users } from 'lucide-react';
 import type { Team } from '../types';
 import * as projectService from '../services/project.service';
 import * as teamService from '../services/team.service';
+import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Input from '../components/Input';
@@ -19,6 +20,8 @@ interface Project {
 
 const TeamPage: React.FC = () => {
     const { teamId } = useParams<{ teamId: string }>();
+    const navigate = useNavigate();
+    const { logout } = useAuth();
     const [team, setTeam] = useState<Team | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -109,7 +112,7 @@ const TeamPage: React.FC = () => {
                         <div className="flex space-x-4">
                             <Button
                                 variant="ghost"
-                                onClick={() => window.location.href = '/dashboard'}
+                                onClick={() => navigate('/dashboard')}
                                 className="text-gray-300 hover:text-white"
                             >
                                 ← Back to Dashboard
@@ -117,9 +120,8 @@ const TeamPage: React.FC = () => {
                             <Button
                                 variant="outline"
                                 onClick={() => {
-                                    localStorage.removeItem('user');
-                                    localStorage.removeItem('token');
-                                    window.location.href = '/';
+                                    logout();
+                                    navigate('/');
                                 }}
                                 className="border-gray-600 text-gray-300 hover:bg-gray-800"
                             >

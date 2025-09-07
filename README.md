@@ -78,10 +78,11 @@ A modern, feature-rich task management application built with cutting-edge techn
 ### DevOps & Infrastructure
 - **Docker** - Containerization
 - **Docker Compose** - Multi-service development
+- **Render** - Backend hosting and deployment
+- **Vercel** - Frontend hosting and deployment
 - **GitHub Actions** - CI/CD pipeline (planned)
 - **AWS Lambda** - Serverless functions (planned)
 - **AWS S3** - Alternative file storage (planned)
-- **Vercel/Netlify** - Frontend deployment (planned)
 
 ### Development Tools
 - **ESLint** - Code linting

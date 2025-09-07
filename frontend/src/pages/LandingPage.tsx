@@ -400,8 +400,8 @@ const LandingPage: React.FC = () => {
                                     <div>• Environment Variables</div>
                                     <div>• Health Checks</div>
                                     <div>• File Uploads (Supabase)</div>
-                                    <div>• Production Ready</div>
-                                    <div>• CI/CD Ready</div>
+                                    <div>• Render (Backend Host)</div>
+                                    <div>• Vercel (Frontend Host)</div>
                                     <div>• Scalable Architecture</div>
                                 </div>
                             </div>
